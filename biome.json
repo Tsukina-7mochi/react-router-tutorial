@@ -9,7 +9,8 @@
       "recommended": true,
       "a11y": {
         "noAccessKey": "error",
-        "useHeadingContent": "error"
+        "useHeadingContent": "error",
+        "useSemanticElements": "off"
       },
       "correctness": {
         "noEmptyCharacterClassInRegex": "error",
