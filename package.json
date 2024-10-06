@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "check": "npx @biomejs/biome check",
+    "check:write": "npx @biomejs/biome check --write",
+    "lint": "npx @biomejs/biome lint",
+    "format": "npx @biomejs/biome format --write",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -14,6 +17,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.3",
     "@eslint/js": "^9.11.1",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
