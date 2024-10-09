@@ -9,7 +9,7 @@ export async function loader({ params }) {
 export function Contact() {
   const contact = useLoaderData();
 
-  const avatarImageUrl = contact.avatar || `https://robohash.org/${contact.id}.png?size=200x200`;
+  const avatarImageUrl = contact.avatar;
 
   return (
     <div id="contact">

@@ -1,6 +1,6 @@
 import { Form, Link, Outlet, useLoaderData } from 'react-router-dom';
 
-import { createContact, getContacts } from '../contacts';
+import { createEmptyContact, getContacts } from '../contacts';
 
 export async function loader() {
   const contacts = await getContacts();
@@ -8,7 +8,7 @@ export async function loader() {
 }
 
 export async function action() {
-  const contact = await createContact();
+  const contact = await createEmptyContact();
   return { contact };
 }
 
