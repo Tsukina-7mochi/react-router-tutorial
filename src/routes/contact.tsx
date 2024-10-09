@@ -1,13 +1,22 @@
 import { Form, useLoaderData } from 'react-router-dom';
-import { getContact } from '../contacts';
+import type { LoaderFunctionArgs } from 'react-router-dom';
+import type { LoaderData } from 'src/routerTypes';
+import invariant from 'tiny-invariant';
+import { type ContactRecord, getContact } from '../contacts';
 
-export async function loader({ params }) {
+export async function loader({ params }: LoaderFunctionArgs) {
+  invariant(params.contactId, 'Missing contactId param');
   const contact = await getContact(params.contactId);
+
+  if (contact === null) {
+    throw new Response('Not Found', { status: 404 });
+  }
+
   return { contact };
 }
 
 export function Contact() {
-  const contact = useLoaderData();
+  const { contact } = useLoaderData() as LoaderData<typeof loader>;
 
   const avatarImageUrl = contact.avatar;
 
@@ -60,7 +69,11 @@ export function Contact() {
   );
 }
 
-function Favorite({ contact }) {
+type FavoriteProps = {
+  contact: ContactRecord;
+};
+
+function Favorite({ contact }: FavoriteProps) {
   const favorite = contact.favorite;
   return (
     <Form method="post">

@@ -1,5 +1,6 @@
 import { Form, Link, Outlet, useLoaderData } from 'react-router-dom';
 
+import type { LoaderData } from 'src/routerTypes';
 import { createEmptyContact, getContacts } from '../contacts';
 
 export async function loader() {
@@ -13,7 +14,7 @@ export async function action() {
 }
 
 export function Root() {
-  const { contacts } = useLoaderData();
+  const { contacts } = useLoaderData() as LoaderData<typeof loader>;
 
   return (
     <>
