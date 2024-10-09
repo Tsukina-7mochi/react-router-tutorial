@@ -1,7 +1,7 @@
+import type React from 'react';
+import { useCallback, useState } from 'react';
 import type { LoaderFunctionArgs } from 'react-router-dom';
-import { Form, NavLink, Outlet, redirect, useLoaderData, useNavigation } from 'react-router-dom';
-
-import { useState } from 'react';
+import { Form, NavLink, Outlet, redirect, useLoaderData, useNavigation, useSubmit } from 'react-router-dom';
 import type { LoaderData } from 'src/routerTypes';
 import { createEmptyContact, getContacts } from '../contacts';
 
@@ -21,6 +21,18 @@ export function Root() {
   const { contacts, q: defaultQuery } = useLoaderData() as LoaderData<typeof loader>;
   const [query, setQuery] = useState(defaultQuery ?? '');
   const navigation = useNavigation();
+  const submit = useSubmit();
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(e.currentTarget.value);
+
+      submit(e.currentTarget.form, {
+        replace: defaultQuery !== null,
+      });
+    },
+    [submit, defaultQuery]
+  );
 
   return (
     <>
@@ -35,7 +47,7 @@ export function Root() {
               type="search"
               name="q"
               value={query}
-              onChange={(e) => setQuery(e.currentTarget.value)}
+              onChange={handleChange}
             />
             <div id="search-spinner" aria-hidden hidden={true} />
             <div aria-live="polite" className="sr-only" />
