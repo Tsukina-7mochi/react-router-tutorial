@@ -23,6 +23,8 @@ export function Root() {
   const navigation = useNavigation();
   const submit = useSubmit();
 
+  const searching = navigation.location && new URLSearchParams(navigation.location.search).has('q');
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setQuery(e.currentTarget.value);
@@ -43,13 +45,14 @@ export function Root() {
             <input
               id="q"
               aria-label="Search contacts"
+              className={searching ? 'loading' : ''}
               placeholder="Search"
               type="search"
               name="q"
               value={query}
               onChange={handleChange}
             />
-            <div id="search-spinner" aria-hidden hidden={true} />
+            <div id="search-spinner" aria-hidden hidden={!searching} />
             <div aria-live="polite" className="sr-only" />
           </form>
           <Form method="post">
