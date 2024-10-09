@@ -1,8 +1,8 @@
-import { Form, useLoaderData } from 'react-router-dom';
-import type { LoaderFunctionArgs } from 'react-router-dom';
+import { Form, useFetcher, useLoaderData } from 'react-router-dom';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router-dom';
 import type { LoaderData } from 'src/routerTypes';
 import invariant from 'tiny-invariant';
-import { type ContactRecord, getContact } from '../contacts';
+import { type ContactRecord, getContact, updateContact } from '../contacts';
 
 export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params.contactId, 'Missing contactId param');
@@ -13,6 +13,15 @@ export async function loader({ params }: LoaderFunctionArgs) {
   }
 
   return { contact };
+}
+
+export async function action({ request, params }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  invariant(params.contactId, 'Missing contactId param');
+
+  return updateContact(params.contactId, {
+    favorite: formData.get('favorite') === 'true',
+  });
 }
 
 export function Contact() {
@@ -74,9 +83,11 @@ type FavoriteProps = {
 };
 
 function Favorite({ contact }: FavoriteProps) {
-  const favorite = contact.favorite;
+  const fetcher = useFetcher();
+  const favorite = fetcher.formData ? fetcher.formData.get('favorite') === 'true' : contact.favorite;
+
   return (
-    <Form method="post">
+    <fetcher.Form method="post">
       <button
         aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
         name="favorite"
@@ -85,6 +96,6 @@ function Favorite({ contact }: FavoriteProps) {
       >
         {favorite ? '★' : '☆'}
       </button>
-    </Form>
+    </fetcher.Form>
   );
 }
