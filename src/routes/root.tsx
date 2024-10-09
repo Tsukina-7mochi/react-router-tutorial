@@ -1,11 +1,15 @@
+import type { LoaderFunctionArgs } from 'react-router-dom';
 import { Form, NavLink, Outlet, redirect, useLoaderData, useNavigation } from 'react-router-dom';
 
+import { useState } from 'react';
 import type { LoaderData } from 'src/routerTypes';
 import { createEmptyContact, getContacts } from '../contacts';
 
-export async function loader() {
-  const contacts = await getContacts();
-  return { contacts };
+export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const q = url.searchParams.get('q');
+  const contacts = await getContacts(q);
+  return { contacts, q };
 }
 
 export async function action() {
@@ -14,7 +18,8 @@ export async function action() {
 }
 
 export function Root() {
-  const { contacts } = useLoaderData() as LoaderData<typeof loader>;
+  const { contacts, q: defaultQuery } = useLoaderData() as LoaderData<typeof loader>;
+  const [query, setQuery] = useState(defaultQuery ?? '');
   const navigation = useNavigation();
 
   return (
@@ -23,7 +28,15 @@ export function Root() {
         <h1>React Router Contacts</h1>
         <div>
           <form id="search-form" role="search">
-            <input id="q" aria-label="Search contacts" placeholder="Search" type="search" name="q" />
+            <input
+              id="q"
+              aria-label="Search contacts"
+              placeholder="Search"
+              type="search"
+              name="q"
+              value={query}
+              onChange={(e) => setQuery(e.currentTarget.value)}
+            />
             <div id="search-spinner" aria-hidden hidden={true} />
             <div aria-live="polite" className="sr-only" />
           </form>
