@@ -1,4 +1,4 @@
-import { Form, Link, Outlet, useLoaderData } from 'react-router-dom';
+import { Form, Link, Outlet, redirect, useLoaderData } from 'react-router-dom';
 
 import type { LoaderData } from 'src/routerTypes';
 import { createEmptyContact, getContacts } from '../contacts';
@@ -10,7 +10,7 @@ export async function loader() {
 
 export async function action() {
   const contact = await createEmptyContact();
-  return { contact };
+  return redirect(`/contacts/${contact.id}/edit`);
 }
 
 export function Root() {
